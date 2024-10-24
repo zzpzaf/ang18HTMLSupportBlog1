@@ -1,6 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { DataService } from './data.service';
-import { IArticle, ICategory } from './dbObjects/blogObjects';
+import { IArticle, ICategory, Pages } from './dbObjects/blogObjects';
+
+const ComponentName = 'ContentService';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +10,6 @@ import { IArticle, ICategory } from './dbObjects/blogObjects';
 export class ContentService {
   constructor() { 
     if (this.$categories.length === 0) this.signalCategories();
-    // if (this.articles.length === 0) this.getAllArticles();
     if (this.$categoryArticles().length === 0) this.signalCategoryArticles(1);
   }
 
@@ -16,10 +17,11 @@ export class ContentService {
 
   componentName = this.constructor.name.replace('_', '');
 
+  public $noPostsPageNr = signal<number>(0);
+  public $pageContent = signal<string>('');
+
   public $categories = signal< ICategory[]>([]); 
   public $category = signal< ICategory>({categoryId: 0, categoryTitle: ''});
-  // public $articles = signal< IArticle[]>([]); 
-  // private articles: IArticle[] = [];
   public $article = signal< IArticle>({articleId: 0, categoryId: 0, articleTitle: '', articleSubTitle: '', articleContent:  ''});
   public $categoryArticles = signal< IArticle[]>([]); 
 
@@ -32,18 +34,6 @@ export class ContentService {
     });
   }
 
-  // public signalCategory(categoryId:number): void {
-  //   if (this.$categories().length > 0) {
-  //     let foundCategory = this.$categories().find((category: ICategory) => category.categoryId == categoryId);
-  //     if (foundCategory) {
-  //       this.$category.set(foundCategory);
-  //       this.signalCategoryArticles(categoryId);
-  //     } else {
-  //       this.$category.set({categoryId: 0, categoryTitle: "Category Not Found!"});
-  //     }
-  //   }
-  // }
-
   public signalCategory(categoryId:number): void {
     this.dataService.getCategory(categoryId).subscribe((category: ICategory) => {
       if (category) {
@@ -55,39 +45,12 @@ export class ContentService {
     });   
   }
 
-  // public getAllArticles(): void {
-  //   this.dataService.getArticles().subscribe((articles: IArticle[]) => {
-  //     this.articles=articles;
-  //     if ( this.$categoryArticles().length == 0) this.signalCategoryArticles(1);
-  //   });
-  // }
-
-  // public signalCategoryArticles(categoryId: number): void {
-  //   if (this.articles.length > 0) {
-  //      let categoryArticles: IArticle[] = [];
-  //       categoryArticles = this.articles.filter((article: IArticle) => article.categoryId === categoryId);
-  //       this.$categoryArticles.set(categoryArticles);
-  //       this.signalArticle(this.$categoryArticles()[0].articleId); 
-  //   }
-  // }
-
   public signalCategoryArticles(categoryId: number): void {
     this.dataService.getCategoryArticles(categoryId).subscribe((categoryarticles: IArticle[]) => {
       this.$categoryArticles.set(categoryarticles);
       this.signalArticle(this.$categoryArticles()[0].articleId);
     });
   }
-
-  // public signalArticle(articleId:number): void {
-  //   if (this.articles.length > 0) {
-  //     let foundArticle = this.articles.find((article: IArticle) => article.articleId == articleId);
-  //     if (foundArticle) {
-  //      this.$article.set( foundArticle);
-  //     } else {
-  //       this.$article.set({articleId: 0, categoryId: 0, articleTitle: "Not Found!", articleSubTitle: "Article Not Found!", articleContent: "Not Found!"});
-  //     }
-  //   }
-  // }
 
   public signalArticle(articleId:number): void {
     this.dataService.getArticle(articleId).subscribe((article: IArticle) => {
@@ -99,6 +62,29 @@ export class ContentService {
     });   
   }
 
+  public signalPageContent(pageId: number): void {
+    if (pageId === 0) {
+      this.$noPostsPageNr.set(0);
+      console.log('>===>> ' + ComponentName + ' - ' + 'NO Page Content');
+      return;
+    }
 
+    // if (pageId > 10) {
+    //   this.$noPostsPageNr.set(pageId);
+    //   console.log('External HTML Page');
+    //   return;
+    // }
+
+    const page = Pages.find((p) => p.PageId === pageId);
+    if (page) {
+      this.$pageContent.set(page.PageContent);
+      this.$noPostsPageNr.set(pageId);
+    } else {
+      this.$pageContent.set('Unknown Page!');
+    }
+
+    console.log('>===>> ' + ComponentName + ' - ' + 'Page Id: ' + this.$noPostsPageNr() + ' Content: ' + this.$pageContent());
+
+  }
 
 }
