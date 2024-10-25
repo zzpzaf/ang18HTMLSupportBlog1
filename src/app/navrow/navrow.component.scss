@@ -23,7 +23,12 @@
     // overflow: auto;
 }
 
-
+.centered-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center !important; /* Maintain the self-alignment if required */
+}
 
 
 @media (min-width: 500px) {

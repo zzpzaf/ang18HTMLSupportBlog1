@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { ContentService } from '../content.service';
 
 @Component({
   selector: 'app-header',
@@ -18,6 +19,12 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class HeaderComponent {
 
+  private contentService = inject(ContentService);
   headerTitle = 'Angular18 - A simple blog implementation';
 
+  public homeClicked() {
+    this.contentService.signalPageContent(1);
+  }
+
 }
+

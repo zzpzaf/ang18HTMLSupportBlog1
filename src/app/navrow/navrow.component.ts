@@ -26,6 +26,8 @@ export class NavrowComponent {
     effect(() => {
       if (this.contentService.$categories().length > 0) {
         this.navMenuItems2 = this.contentService.$categories();
+        this.setInitialSubMenuItemCats(this.currStart);
+        this.selectedCategory = this.contentService.$category();
         // console.log('>===>> ' + ComponentName + ' - ' + 'Nav Menu Items - Categories Changed/Received:', this.navMenuItems2);
       }
     });
@@ -33,23 +35,17 @@ export class NavrowComponent {
 
 
   private contentService = inject(ContentService);
-
-
   navbarName: string = 'Navigation';
-
-  // navMenuItems1: IPage[] = [
-  //   { PageId: 1, PageTitle: 'Home' },
-  //   { PageId: 2, PageTitle: 'About' },
-  //   { PageId: 3, PageTitle: 'Contact' },
-  // ];
   navMenuItems1 = Pages;
-
   navMenuItems2: ICategory[] = [];
+  
+  subMenuItemCats: ICategory[] = [];
+  catButtonsNr: number = 4;
+  currStart: number = 0;
+  rdis: boolean = true;
+  fdis: boolean = false;
+  selectedCategory!: ICategory;
 
-  // itemSiteMenuClicked(category: ISiteMenu): void {
-  //   console.log('>===>> ' + this.componentName + ' - itemClicked', category);
-  //   // this.contentService.getCategoryArticles(category.categoryId);
-  // }
 
   pageClicked(page: IPage): void {
     // console.log('>===>> ' + ComponentName + ' - ' + 'Page Nr Clicked', page.PageTitle);
@@ -61,4 +57,67 @@ export class NavrowComponent {
     this.contentService.signalPageContent(0);
     this.contentService.signalCategoryArticles(category.categoryId);
   }
+
+
+  setInitialSubMenuItemCats(st:number): void {
+    console.log('>===>> ' + ComponentName + ' - Start Nr: ' + st);
+    if (this.navMenuItems2.length == 0) return;
+    this.subMenuItemCats = [];
+    let indx: number;
+
+    for (let i = 0; i < (this.catButtonsNr); i++) {
+      indx = st + i;
+      this.subMenuItemCats.push(this.navMenuItems2[indx]); 
+      if (indx === this.navMenuItems2.length -1) {  
+        this.fdis = true;
+        return; 
+      }
+    }
+  }
+
+  FButtonClicked(): void {
+    if (this.currStart == this.navMenuItems2.length -1 ) return; 
+    if (this.navMenuItems2.length == 0) return;
+    this.currStart = this.currStart + 1;
+    this.subMenuItemCats = [];
+    let indx: number;
+
+    for (let i = 0; i < (this.catButtonsNr); i++) {
+      indx = this.currStart + i;
+      this.subMenuItemCats.push(this.navMenuItems2[indx]); 
+      if (indx === this.navMenuItems2.length -1) {  
+        this.fdis = true;
+        break; 
+      }
+    }
+    if (this.subMenuItemCats[0].categoryId > this.navMenuItems2[0].categoryId ) {
+      this.rdis = false;
+    }
+  }
+
+  RButtonClicked(): void {
+    if (this.currStart == 0 ) {
+      this.rdis = false;
+      return;  
+    }
+    this.currStart = this.currStart - 1;
+
+    this.subMenuItemCats = [];
+    let indx: number;
+    for (let i = 0; i < (this.catButtonsNr); i++) {
+      indx = this.currStart + i;
+      this.subMenuItemCats.push(this.navMenuItems2[indx]); 
+    }
+    let orgIndx: number  = this.navMenuItems2.findIndex(el => el.categoryId == this.subMenuItemCats[this.catButtonsNr-1].categoryId);
+    if (this.navMenuItems2.length-1 > orgIndx ) {
+      this.fdis = false;
+    }
+    
+    if (this.subMenuItemCats[0].categoryId == this.navMenuItems2[0].categoryId ) {
+      this.rdis = true;
+    }
+
+  }
+
+
 }
