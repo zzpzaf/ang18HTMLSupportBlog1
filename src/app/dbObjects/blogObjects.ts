@@ -1,4 +1,36 @@
- 
+import { Type } from "@angular/core";
+import { HeaderComponent } from "../header/header.component";
+import { NavrowComponent } from "../navrow/navrow.component";
+import { LeftpaneComponent } from "../leftpane/leftpane.component";
+import { MainComponent } from "../main/main.component";
+import { RightpaneComponent } from "../rightpane/rightpane.component";
+import { FooterComponent } from "../footer/footer.component";
+
+
+export interface Tile {
+    cols: number;
+    rows: number;
+    text: string;
+    color: string;
+  }
+  
+  interface DynLayOutComponentsType {
+    [key: string]: Type<any>;
+  }
+  
+  export const DynLayOutComponents: DynLayOutComponentsType = {
+    header: HeaderComponent,
+    navrow: NavrowComponent,
+    leftpane: LeftpaneComponent,
+    main: MainComponent,
+    rightpane: RightpaneComponent,
+    footer: FooterComponent,
+  };
+  
+  
+  
+
+
 export interface ICategory {
     categoryId: number;
     categoryTitle: string;

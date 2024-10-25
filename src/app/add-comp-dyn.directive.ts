@@ -1,5 +1,6 @@
 import { ComponentRef, Directive, effect, input, ViewContainerRef } from '@angular/core';
-import { DynLayOutComponents } from './app.component';
+import { DynLayOutComponents } from './dbObjects/blogObjects';
+
 
 @Directive({
   selector: '[addCompDyn]',
@@ -16,6 +17,7 @@ export class AddCompDynDirective {
       if (!layOutCompSelected) {
         return;
       }
+      this.viewContainerRef.clear();
       const dynComponent = DynLayOutComponents[layOutCompSelected];
       this.viewContainerRef.createComponent(dynComponent);
     });

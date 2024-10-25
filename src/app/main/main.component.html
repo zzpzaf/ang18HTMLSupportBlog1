@@ -1,11 +1,17 @@
 <!-- <p>main works!</p> -->
 <mat-card appearance="outlined">
+  @if (pgNr === 0) {
   <mat-card-header>
     <mat-card-title>{{article.articleTitle}}</mat-card-title>
     <mat-card-subtitle>{{article.articleSubTitle}}</mat-card-subtitle>
   </mat-card-header>
   <mat-divider></mat-divider>
-  <mat-card-content>
+  <mat-card-content>  
     {{article.articleContent}}
   </mat-card-content>
+} @else if (pgNr > 0) {
+  <mat-card-content>  
+    {{pageContent}}
+  </mat-card-content>
+}
 </mat-card>

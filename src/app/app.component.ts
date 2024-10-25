@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, Type } from '@angular/core';
+import { Component, effect, inject, OnInit, Type } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
@@ -9,29 +9,10 @@ import { LeftpaneComponent } from './leftpane/leftpane.component';
 import { MainComponent } from './main/main.component';
 import { RightpaneComponent } from './rightpane/rightpane.component';
 import { FooterComponent } from './footer/footer.component';
+import { ContentService } from './content.service';
+import { Tile } from './dbObjects/blogObjects';
 
-export interface Tile {
-  cols: number;
-  rows: number;
-  text: string;
-  color: string;
-}
-
-interface DynLayOutComponentsType {
-  [key: string]: Type<any>;
-}
-
-export const DynLayOutComponents: DynLayOutComponentsType = {
-  header: HeaderComponent,
-  navrow: NavrowComponent,
-  leftpane: LeftpaneComponent,
-  main: MainComponent,
-  rightpane: RightpaneComponent,
-  footer: FooterComponent,
-};
-
-
-
+const ComponentName = 'AppComponent';
 
 @Component({
   selector: 'app-root',
@@ -50,7 +31,7 @@ export const DynLayOutComponents: DynLayOutComponentsType = {
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   private breakpointObserver = inject(BreakpointObserver);
   private componentName = this.constructor.name.replace('_', '');
   public title = 'Angular18-Holy-Grail-repo1(Grid)';
@@ -85,8 +66,32 @@ export class AppComponent implements OnInit {
     { text: 'footer', cols: 12, rows: 2, color: 'lightseagreen' },
   ];
 
-  ngOnInit(): void {
-    this.getBreakepoints();
+  // ngOnInit(): void {
+  //   this.getBreakepoints();
+  // }
+
+
+  private tilesNoPosts: Tile[] = [
+    { text: 'header', cols: 12, rows: 2, color: 'dodgerblue' },
+    { text: 'navrow', cols: 12, rows: 2, color: 'lightblue' },
+    { text: 'main', cols: 12, rows: 16, color: 'lightgray' },
+    { text: 'footer', cols: 12, rows: 2, color: 'lightseagreen' },
+  ];
+
+  private contentService = inject(ContentService);
+  private noPostsPageNumber: number = 0;
+
+  constructor() {
+    effect(() => {
+      this.noPostsPageNumber = this.contentService.$noPostsPageNr();
+      console.log("NoPosts Page Nr ? " + this.noPostsPageNumber);
+      if (this.noPostsPageNumber === 0) {
+        this.getBreakepoints();
+        } else {
+          this.tiles = this.tilesNoPosts;
+        }
+        console.log(""+ JSON.stringify(this.tiles));
+    });
   }
 
   private getBreakepoints(): void {
@@ -96,6 +101,7 @@ export class AppComponent implements OnInit {
   }
 
   private getTiles(): void {
+    if (this.noPostsPageNumber) return;
     if (this.breakpointObserver.isMatched(Breakpoints.Medium)) {
       this.currentBreakpoint = Breakpoints.Medium;
       this.tiles = this.tilesMedium;
