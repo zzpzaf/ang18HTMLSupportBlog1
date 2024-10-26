@@ -52,11 +52,11 @@ export interface ISiteMenu {
 export interface IPage {
     PageId: number; 
     PageTitle: string 
-    PageContent: string
+    // PageContent: string
 }
 export const Pages: IPage[] = [
-    { PageId: 1, PageTitle: 'Home', PageContent: 'This is my Home Page'},
-    { PageId: 2, PageTitle: 'About', PageContent: 'This is the About Page' },
-    { PageId: 3, PageTitle: 'Contact', PageContent: 'This is the Contact details Page'},
+    { PageId: 1, PageTitle: 'Home' }, 
+    { PageId: 2, PageTitle: 'About' }, 
+    { PageId: 3, PageTitle: 'Contact' },
     // { PageId: 11, PageTitle: 'External' },
 ] 

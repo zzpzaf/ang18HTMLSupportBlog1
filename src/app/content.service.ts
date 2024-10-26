@@ -76,15 +76,28 @@ export class ContentService {
     // }
 
     const page = Pages.find((p) => p.PageId === pageId);
+    // if (page) {
+    //   this.$pageContent.set(page.PageContent);
+    //   this.$noPostsPageNr.set(pageId);
+    // } else {
+    //   this.$pageContent.set('Unknown Page!');
+    // }
+
     if (page) {
-      this.$pageContent.set(page.PageContent);
-      this.$noPostsPageNr.set(pageId);
+      this.dataService
+        .getPage(page.PageTitle)
+        .subscribe((htmlContent: string) => {
+          if (htmlContent) {
+            this.$pageContent.set(htmlContent);
+            this.$noPostsPageNr.set(pageId);
+          } else {
+            this.$pageContent.set('HTML Page Not Found!');
+          }
+        });
     } else {
-      this.$pageContent.set('Unknown Page!');
-    }
-
-    console.log('>===>> ' + ComponentName + ' - ' + 'Page Id: ' + this.$noPostsPageNr() + ' Content: ' + this.$pageContent());
-
+      this.$pageContent.set('Unknown HTML Page!');
+    }  
+    // console.log('>===>> ' + ComponentName + ' - ' + 'Page Id: ' + this.$noPostsPageNr() + ' Content: ' + this.$pageContent());
   }
 
 }

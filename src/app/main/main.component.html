@@ -11,7 +11,9 @@
   </mat-card-content>
 } @else if (pgNr > 0) {
   <mat-card-content>  
-    {{pageContent}}
+    <!-- {{pageContent}} -->
+    <!-- <div [innerHTML]="pageContent"></div>  -->
+    <div [innerHTML]="safeHtmlContent"></div>  
   </mat-card-content>
 }
 </mat-card>

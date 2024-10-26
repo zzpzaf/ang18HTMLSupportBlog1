@@ -16,6 +16,7 @@ export class DataService {
   // baseURL: string = '/assets/';
   // baseURL: string = 'http://localhost:8080/blogapi/';
   baseURL: string = environment.apiUrl;
+  pageBaseURL: string = '/assets/';
 
 
 
@@ -50,6 +51,15 @@ export class DataService {
       .get<IArticle>(this.baseURL + `articles` + '/articleId/' + articleId)       
       .pipe(retry(1), catchError(this.handleError));
   }
+
+
+  getPage(htmlPageName: string): Observable<string> {
+    return this.http
+      .get( this.pageBaseURL + htmlPageName + '.html', { responseType: 'text' })
+      .pipe(retry(1), catchError(this.handleError));
+  }
+
+
 
 
 
